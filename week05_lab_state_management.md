@@ -503,7 +503,7 @@ class HomePage extends StatelessWidget {
 image
 <img width="1918" height="409" alt="image" src="https://github.com/user-attachments/assets/8d900754-2601-46ed-bed1-823796991d93" />
 
-![Uploading image.png…]()
+<img width="1919" height="464" alt="image" src="https://github.com/user-attachments/assets/bb66fc7f-36b2-480b-b894-00a2a81311f3" />
 
 ---
 
@@ -755,6 +755,15 @@ class HomePage extends ConsumerWidget {
 
 > ✅ **Checkpoint 4.2** เขียนตารางเปรียบเทียบสั้น ๆ ว่าตอนแปลงจาก Provider เป็น Riverpod ต้องเปลี่ยนอะไรบ้าง (เช่น `ChangeNotifier` → `StateNotifier`, `StatelessWidget` → `ConsumerWidget`, `context.watch` → `ref.watch`) อย่างน้อย 4 คู่เทียบ
 
+![Uploading image.png…]()
+
+ตอนใช้ Provider,เมื่อเปลี่ยนเป็น Riverpod,ความหมาย (ใช้ทำอะไร?)
+MultiProvider,ProviderScope,จุดเริ่มต้นแอป (ครอบ runApp ไว้เพื่อให้ใช้ State ได้)
+StatelessWidget,ConsumerWidget,คลาสหน้าจอ UI (เปลี่ยนเพื่อให้เข้าถึงตัวแปร ref ได้)
+ChangeNotifier,Notifier,คลาสจัดการ State (ใช้เก็บข้อมูลและเขียนฟังก์ชันเปลี่ยนค่า)
+context.watch<T>(),ref.watch(provider),ดึงค่ามาแสดงผล (UI จะ Rebuild อัตโนมัติเมื่อค่าเปลี่ยน)
+context.read<T>(),ref.read(provider.notifier),เรียกใช้ฟังก์ชัน (มักใช้ในปุ่มกด ไม่ทำให้ UI Rebuild)
+
 ---
 
 ## ส่วนที่ 5 (ทำด้วยตนเอง): ออกแบบฟีเจอร์เพิ่มด้วยตัวเอง
@@ -769,7 +778,8 @@ class HomePage extends ConsumerWidget {
 
 - ต้องตัดสินใจเองว่าค่าคำค้นหาควรเป็น Ephemeral State หรือ App State พร้อมให้เหตุผลสั้น ๆ ไว้ในช่องด้านล่าง
   ```text
-
+Ephemeral State
+ค้นหาสินค้า (Search Query) มีขอบเขตการใช้งานแค่ภายในหน้า Home หน้าเดียว เพื่อใช้กรองรายการที่แสดงผลเท่านั้น ไม่จำเป็นต้องแชร์ค่านี้ไปให้หน้าอื่น (เช่น หน้า Detail หรือ Favorites) รับรู้ การใช้แค่ StatefulWidget ควบคู่กับ setState จึงเหมาะสม เบาที่สุด และไม่เปลืองทรัพยากรในการสร้าง Global State โดยไม่จำเป็น
   ```
 - ถ้าตัดสินใจว่าเป็น Ephemeral State ห้ามใช้ Provider สำหรับฟีเจอร์นี้ ให้ฝึกเลือกใช้เครื่องมือที่เบาที่สุดที่เพียงพอ (`setState` ธรรมดา)
 
@@ -781,7 +791,9 @@ class HomePage extends ConsumerWidget {
 
 - ต้องใช้ `context.read` หรือ `context.watch` ให้ถูกต้องตามหลักการ และอธิบายเหตุผลการเลือก ในช่องด้านล่าง
   ```text
-
+ควรใช้ทั้ง context.watch และ context.read 
+1. ใช้ context.watch ในส่วนของการตรวจสอบเงื่อนไขเพื่อแสดงหรือซ่อนปุ่ม เพราะ UI จำเป็นต้องเฝ้าดูการเปลี่ยนแปลงของจำนวนรายการโปรดตลอดเวลา หากรายการเป็น 0 ปุ่มจะได้หายไปโดยอัตโนมัติ
+2. ใช้ context.read ภายในฟังก์ชัน onPressed ของปุ่ม ตอนที่เรียกเมธอด clear() เพราะการกดปุ่มคือการ Action ให้ทำงานเพียงครั้งเดียว ไม่จำเป็นต้องให้ตัวปุ่มมารอฟังการ Rebuild จากข้อมูลที่เปลี่ยนไป
 
   ```
 - ปุ่มต้องแสดงเฉพาะเมื่อมีรายการโปรดอย่างน้อย 1 รายการเท่านั้น (ถ้ารายการว่างอยู่แล้วไม่ต้องแสดงปุ่มนี้)
